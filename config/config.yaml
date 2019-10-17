@@ -1,0 +1,7 @@
+rapidapiYahooFinanceSummaryEndpoint: https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-summary
+
+rapidapiYahooFinanceChartsEndpoint: https://apidojo-yahoo-finance-v1.p.rapidapi.com/market/get-charts
+
+xRapidapiHost: apidojo-yahoo-finance-v1.p.rapidapi.com
+
+xRapidapiKey: bf6a2bf862mshe23d3acd0df4650p1c0239jsnecc20948c78a

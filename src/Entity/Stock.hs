@@ -3,6 +3,8 @@ module Entity.Stock
   , Stock(..)
   , StockPrice(..)
   , StockId
+  , StockTerm(..)
   ) where
 
 import           Entity.Internal.Stock
+import           Entity.Internal.StockTerm

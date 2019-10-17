@@ -1,10 +1,10 @@
 name: stock-data-collector
 version: 0.1.0.0
-github: "githubuser/stock-data-collector"
+github: 'githubuser/stock-data-collector'
 license: BSD3
-author: "Author name here"
-maintainer: "example@example.com"
-copyright: "2019 Author name here"
+author: 'Author name here'
+maintainer: 'example@example.com'
+copyright: '2019 Author name here'
 
 extra-source-files:
   - README.md
@@ -26,9 +26,18 @@ library:
   source-dirs: src
   dependencies:
     - aeson
+    - aeson-pretty
+    - bytestring
+    - extra
     - http-conduit
     - http-types
+    - lens
+    - lens-aeson
+    - reflection
+    - text
+    - text-show
     - time
+    - yaml
 
 executables:
   stock-data-collector-exe:
@@ -39,6 +48,7 @@ executables:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
+      - reflection
       - stock-data-collector
 
 tests:
