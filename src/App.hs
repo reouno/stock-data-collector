@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Lib
+module App
   ( app
   , sampleRequest
   , getDJIDataOfLastDay
@@ -23,7 +23,7 @@ app :: Given Config => IO ()
 app = do
   let config = given :: Config
       fetcher = YahooFinanceFetcher $ (encodeUtf8 . xRapidapiKey) config
-  stocks <- fetchStockData fetcher "AAPL" T1Day
+  stocks <- fetchStockData fetcher "AAPL" ("5D" :: String)
   print stocks
 
 rapidAPIYahooFinanceSummaryEndpoint =

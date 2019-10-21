@@ -5,8 +5,8 @@ module Main where
 
 import           Data.Reflection             ( Given, give )
 
+import           App
 import           Config.Config               ( Config (..), loadConfig )
-import           Lib
 import           Lib.RapidapiYahooFinanceAPI
 
 main :: IO ()

@@ -4,6 +4,8 @@
 import Data.Aeson
 import Data.Aeson.Types
 import Data.Char (toLower)
+import Data.List
+import Data.Maybe
 import Network.HTTP.Simple
 import Network.HTTP.Types
 import GHC.Generics (Generic)
@@ -29,7 +31,7 @@ queryParams =
   , ("lang", Just "en")
   , ("symbol", Just "^DJI")
   , ("interval", Just "1d")
-  , ("range", Just "1d")
+  , ("range", Just "3d")
   ]
 :}
 
@@ -41,7 +43,15 @@ resBody = getResponseBody res
 
 quote = resBody ^? key "chart" . key "result" . nth 0 . key "indicators" . key "quote" . nth 0
 
+-- lensで取り出したMaybeのArrayからリストに変換
+mayOpenVals = resBody ^? key "chart" . key "result" . nth 0 . key "indicators" . key "quote" . nth 0 . key "open"
+-- 型は推論してくれるので指定しなくても良い
+mayOpens = (^.. values . _Double) <$> resBody ^? key "chart" . key "result" . nth 0 . key "indicators" . key "quote" . nth 0 . key "open"
 
+
+-- timestampsのところは
+mayTs = (^.. values . _Integer) <$> resBody ^? key "chart" . key "result" . nth 0 . key "timestamp" :: Maybe [Integer]
+mayTimestamps = map (utctDay . posixSecondsToUTCTime . fromIntegral) <$> mayTs
 
 -- ここからできる
 :set -XOverloadedStrings
@@ -147,3 +157,6 @@ tss = utctDay . posixSecondsToUTCTime . fromIntegral <$> rawData ^? key "chart" 
   nth 0 .
   _Integer
 :}
+
+-- StockPrice generating function
+convert2SP os cs hs ls = map (\(x1,x2,x3,x4) -> StockPrice x1 x2 x3 x4) $ zip4 os cs hs ls

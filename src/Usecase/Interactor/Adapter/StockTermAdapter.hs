@@ -1,8 +1,24 @@
-module Usecase.Interactor.Adapter.StockTermAdapter
-  ( stockTerm2String
-  ) where
+{-# LANGUAGE FlexibleInstances #-}
 
-import           Entity.Stock ( StockTerm (..) )
+module Usecase.Interactor.Adapter.StockTermAdapter where
+
+import           Data.Char                      ( toUpper )
+
+import           Entity.Stock                   ( StockTerm (..) )
+import           Usecase.Interface.MayStockTerm ( MayStockTerm (..) )
+
+instance MayStockTerm String where
+  toStockTerm term
+    | uTerm == "1D" = Just T1Day
+    | uTerm == "5D" = Just T5Day
+    | uTerm == "3M" = Just T3Mon
+    | uTerm == "6M" = Just T6Mon
+    | uTerm == "1Y" = Just T1Year
+    | uTerm == "5Y" = Just T5Year
+    | uTerm == "MAX" = Just TMax
+    | otherwise = Nothing
+    where
+      uTerm = map toUpper term
 
 stockTerm2String :: StockTerm -> String
 stockTerm2String T1Day  = "1d"
