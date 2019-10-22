@@ -6,6 +6,7 @@ module Lib.RapidapiYahooFinanceAPI where
 import           Control.Lens
 import           Data.ByteString      ( ByteString )
 import qualified Data.ByteString.Lazy as BL
+import           Data.Foldable        ( foldl' )
 import           Network.HTTP.Simple  ( Query, Request, RequestHeaders, Response, httpLBS,
                                         parseRequest_, setRequestHeaders, setRequestQueryString )
 
@@ -125,90 +126,37 @@ ryfDefaultQueries =
   ]
 
 makeRyfQueries :: [RapidapiYahooFinanceQuery] -> Query
-makeRyfQueries = makeRyfQueries' ryfDefaultQueries
-  where
-    makeRyfQueries' :: Query -> [RapidapiYahooFinanceQuery] -> Query
-    makeRyfQueries' queries [] = queries
-    makeRyfQueries' queries (RYFRegion query:xs) =
-      makeRyfQueries'
-        [ if x0 == "region"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFLang query:xs) =
-      makeRyfQueries'
-        [ if x0 == "lang"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFStart query:xs) =
-      makeRyfQueries'
-        [ if x0 == "start"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFCount query:xs) =
-      makeRyfQueries'
-        [ if x0 == "count"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFSymbols query:xs) =
-      makeRyfQueries'
-        [ if x0 == "symbols"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFSymbol query:xs) =
-      makeRyfQueries'
-        [ if x0 == "symbol"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFInterval query:xs) =
-      makeRyfQueries'
-        [ if x0 == "interval"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFRange query:xs) =
-      makeRyfQueries'
-        [ if x0 == "range"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFComparisons query:xs) =
-      makeRyfQueries'
-        [ if x0 == "comparisons"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
-    makeRyfQueries' queries (RYFQuery query:xs) =
-      makeRyfQueries'
-        [ if x0 == "query"
-          then (x0, Just $ showB query)
-          else (x0, x1)
-        | (x0, x1) <- queries
-        ]
-        xs
+makeRyfQueries = foldl' parseQuery ryfDefaultQueries
+
+parseQuery :: Query -> RapidapiYahooFinanceQuery -> Query
+parseQuery queries (RYFRegion query) =
+  replaceElemOfQueries queries "region" $ Just (showB query)
+parseQuery queries (RYFLang query) =
+  replaceElemOfQueries queries "lang" $ Just (showB query)
+parseQuery queries (RYFStart query) =
+  replaceElemOfQueries queries "start" $ Just (showB query)
+parseQuery queries (RYFCount query) =
+  replaceElemOfQueries queries "count" $ Just (showB query)
+parseQuery queries (RYFSymbols query) =
+  replaceElemOfQueries queries "symbols" $ Just (showB query)
+parseQuery queries (RYFSymbol query) =
+  replaceElemOfQueries queries "symbol" $ Just (showB query)
+parseQuery queries (RYFInterval query) =
+  replaceElemOfQueries queries "interval" $ Just (showB query)
+parseQuery queries (RYFRange query) =
+  replaceElemOfQueries queries "range" $ Just (showB query)
+parseQuery queries (RYFComparisons query) =
+  replaceElemOfQueries queries "comparisons" $ Just (showB query)
+parseQuery queries (RYFQuery query) =
+  replaceElemOfQueries queries "query" $ Just (showB query)
+
+replaceElemOfQueries :: Query -> ByteString -> Maybe ByteString -> Query
+replaceElemOfQueries xs key value =
+  [ if x0 == key
+    then (x0, value)
+    else (x0, x1)
+  | (x0, x1) <- xs
+  ]
 
 makeRyfSummaryQueries :: [RapidapiYahooFinanceQuery] -> Query
 makeRyfSummaryQueries queries =
